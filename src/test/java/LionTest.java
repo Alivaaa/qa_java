@@ -1,10 +1,10 @@
 import com.example.Feline;
 import com.example.Lion;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
@@ -14,12 +14,17 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LionTest {
-    @Spy
-    private Feline feline = new Feline();
+    private Feline feline;
+    private Lion lion;
+
+    @Before
+    public void setUp() throws Exception {
+        feline = Mockito.mock(Feline.class);
+        lion = new Lion("Самец", feline);
+    }
 
     @Test
-    public void getKittensReturnsValidCount() throws Exception {
-        Lion lion = new Lion("Самец", feline);
+    public void getKittensReturnsValidCount() {
         Mockito.when(feline.getKittens()).thenReturn(1);
         int expectedResult = 1;
         int actualResult = lion.getKittens();
@@ -28,7 +33,6 @@ public class LionTest {
 
     @Test
     public void getFoodReturnsValidList() throws Exception {
-        Lion lion = new Lion("Самец", feline);
         Mockito.when(feline.getFood("Хищник")).thenReturn(Arrays.asList("Животные", "Птицы", "Рыба"));
         List<String> expectedResult = Arrays.asList("Животные", "Птицы", "Рыба");
         List<String> actualResult = lion.getFood();
@@ -38,7 +42,7 @@ public class LionTest {
     @Test
     public void constructorThrowsExceptionOnUnsupportedSex() {
         Exception exception = Assert.assertThrows(Exception.class, () -> {
-            Lion lion = new Lion("Unsupported", feline);
+          lion = new Lion("Unsupported", feline);
         });
         assertEquals("Используйте допустимые значения пола животного - самец или самка", exception.getMessage());
     }
